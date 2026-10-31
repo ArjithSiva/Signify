@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signify — Smart Glove Sign to Speech Translation</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.10.1/mqtt.min.js"></script>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <a href="/" class="brand-container">
+      <div class="brand-icon">🖐️</div>
+      <span class="brand-name">Signify</span>
+      <span class="brand-badge">Smart Glove v2.0</span>
+    </a>
+
+    <div class="nav-links">
+      <a href="/" class="nav-link active">
+        <span>⚡</span> Live Translation
+      </a>
+      <a href="/customize" class="nav-link">
+        <span>⚙️</span> Customize Signs
+      </a>
+      <a href="/about" class="nav-link">
+        <span>📖</span> About Project
+      </a>
+    </div>
+
+    <div class="nav-actions">
+      <div class="status-pill">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">System Ready</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="main-wrapper">
+    
+    <header class="page-header">
+      <h1 class="page-title">Sign Language to Speech Interface</h1>
+      <p class="page-subtitle">Real-time Indian Sign Language (ISL) glove translation with low-latency neural synthesis</p>
+    </header>
+
+    <div class="translator-grid">
+      
+      <!-- LEFT STAGE: Live Detection & Sentence Construction -->
+      <div class="main-stage">
+        
+        <!-- Live Recognized Sign Banner -->
+        <div class="live-sign-banner">
+          <div class="live-label-caption">Currently Detected Gesture</div>
+          <div class="live-sign-text" id="liveSignDisplay">Ready</div>
+          
+          <!-- Soundwave Animation -->
+          <div class="soundwave-box" id="soundwaveBox" title="Voice Speaking Indicator">
+            <div class="soundwave-bar"></div>
+            <div class="soundwave-bar"></div>
+            <div class="soundwave-bar"></div>
+            <div class="soundwave-bar"></div>
+            <div class="soundwave-bar"></div>
+            <div class="soundwave-bar"></div>
+            <div class="soundwave-bar"></div>
+            <div class="soundwave-bar"></div>
+          </div>
+
+          <div class="live-sign-meta">
+            <span id="liveConfidence">Waiting for glove gesture stream...</span>
+          </div>
+        </div>
+
+        <!-- Sentence Builder Strip -->
+        <div class="sentence-container">
+          <div class="sentence-header">
+            <span>Constructed Sentence</span>
+            <span style="font-size: 0.75rem; color: var(--accent-cyan);">Auto-accumulates signs</span>
+          </div>
+          <div class="sentence-display" id="sentenceDisplay">Sign gestures to build sentence...</div>
+          <div class="sentence-controls">
+            <button class="btn btn-primary btn-sm" onclick="speakCurrentSentence()">
+              🔊 Speak Sentence
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="addSentenceSpace()">
+              ⎵ Add Space
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="sentenceBackspace()">
+              ⌫ Backspace
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="clearSentence()">
+              🗑️ Clear
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat / Speech History Feed -->
+        <div class="glass-card">
+          <div class="card-header-row">
+            <div class="card-title">
+              <span>💬</span> Spoken Speech History
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="clearChat()">
+              Clear Feed
+            </button>
+          </div>
+          <div class="chat-window" id="chatFeed">
+            <div class="chat-message">
+              <div class="msg-avatar">🤖</div>
+              <div class="msg-body">
+                <div class="msg-text">Signify glove audio engine initialized. Form any gesture to speak.</div>
+                <div class="msg-meta">System notification • Ready</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT SIDEBAR: Speech Settings & Sensor Telemetry -->
+      <div class="sidebar">
+
+        <!-- Voice & Speech Synthesis Controls -->
+        <div class="glass-card" style="margin-bottom: 1.5rem;">
+          <div class="card-header-row">
+            <div class="card-title">
+              <span>🔊</span> Voice Synthesis
+            </div>
+          </div>
+
+          <!-- Auto-speak toggle -->
+          <div class="toggle-switch-row">
+            <div>
+              <div style="font-weight: 600; font-size: 0.9rem;">Auto-Speak Signs</div>
+              <div style="font-size: 0.75rem; color: var(--text-dim);">Speaks gestures immediately</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="autoSpeakToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <!-- Voice Select -->
+          <div class="settings-group">
+            <div class="setting-label">
+              <span>Voice Accent / Engine</span>
+            </div>
+            <select class="custom-select" id="voiceSelect">
+              <option value="">Default Browser Voice</option>
+            </select>
+          </div>
+
+          <!-- Rate / Pitch Sliders -->
+          <div class="settings-group">
+            <div class="setting-label">
+              <span>Speech Speed</span>
+              <span id="rateVal" style="color: var(--accent-cyan); font-family: 'JetBrains Mono';">1.0x</span>
+            </div>
+            <input type="range" class="custom-range" id="rateSlider" min="0.5" max="1.8" step="0.1" value="1.0">
+          </div>
+
+          <div class="settings-group">
+            <div class="setting-label">
+              <span>Pitch</span>
+              <span id="pitchVal" style="color: var(--accent-cyan); font-family: 'JetBrains Mono';">1.0x</span>
+            </div>
+            <input type="range" class="custom-range" id="pitchSlider" min="0.5" max="1.5" step="0.1" value="1.0">
+          </div>
+        </div>
+
+        <!-- Live Flex Sensor Visualizer -->
+        <div class="glass-card" style="margin-bottom: 1.5rem;">
+          <div class="card-header-row">
+            <div class="card-title">
+              <span>🖐️</span> Flex Sensors Telemetry
+            </div>
+          </div>
+
+          <div class="sensor-bars-container">
+            <div class="sensor-bar-item">
+              <span class="sensor-name">Thumb (32)</span>
+              <div class="sensor-track"><div class="sensor-fill" id="barThumb"></div></div>
+              <span class="sensor-val" id="valThumb">0</span>
+            </div>
+            <div class="sensor-bar-item">
+              <span class="sensor-name">Index (33)</span>
+              <div class="sensor-track"><div class="sensor-fill" id="barIndex"></div></div>
+              <span class="sensor-val" id="valIndex">0</span>
+            </div>
+            <div class="sensor-bar-item">
+              <span class="sensor-name">Middle (34)</span>
+              <div class="sensor-track"><div class="sensor-fill" id="barMiddle"></div></div>
+              <span class="sensor-val" id="valMiddle">0</span>
+            </div>
+            <div class="sensor-bar-item">
+              <span class="sensor-name">Ring (35)</span>
+              <div class="sensor-track"><div class="sensor-fill" id="barRing"></div></div>
+              <span class="sensor-val" id="valRing">0</span>
+            </div>
+            <div class="sensor-bar-item">
+              <span class="sensor-name">Pinky (36)</span>
+              <div class="sensor-track"><div class="sensor-fill" id="barPinky"></div></div>
+              <span class="sensor-val" id="valPinky">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Gesture Simulator -->
+        <div class="glass-card">
+          <div class="card-header-row">
+            <div class="card-title">
+              <span>🎮</span> Sign Simulator
+            </div>
+            <span style="font-size: 0.75rem; color: var(--text-dim);">Test without glove</span>
+          </div>
+
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">
+            Click any sign to test text-to-speech & visual animations:
+          </div>
+
+          <div class="simulator-keypad">
+            <button class="sim-key" onclick="simulateSign('A')">A</button>
+            <button class="sim-key" onclick="simulateSign('B')">B</button>
+            <button class="sim-key" onclick="simulateSign('C')">C</button>
+            <button class="sim-key" onclick="simulateSign('D')">D</button>
+            <button class="sim-key" onclick="simulateSign('E')">E</button>
+            <button class="sim-key" onclick="simulateSign('F')">F</button>
+            <button class="sim-key" onclick="simulateSign('G')">G</button>
+            <button class="sim-key" onclick="simulateSign('H')">H</button>
+            <button class="sim-key" onclick="simulateSign('I')">I</button>
+            <button class="sim-key" onclick="simulateSign('J')">J</button>
+            <button class="sim-key" onclick="simulateSign('K')">K</button>
+            <button class="sim-key" onclick="simulateSign('L')">L</button>
+            <button class="sim-key" onclick="simulateSign('M')">M</button>
+            <button class="sim-key" onclick="simulateSign('N')">N</button>
+            <button class="sim-key" onclick="simulateSign('O')">O</button>
+            <button class="sim-key" onclick="simulateSign('P')">P</button>
+            <button class="sim-key" onclick="simulateSign('Q')">Q</button>
+            <button class="sim-key" onclick="simulateSign('R')">R</button>
+            <button class="sim-key" onclick="simulateSign('S')">S</button>
+            <button class="sim-key" onclick="simulateSign('T')">T</button>
+            <button class="sim-key" onclick="simulateSign('U')">U</button>
+            <button class="sim-key" onclick="simulateSign('0')">0</button>
+            <button class="sim-key" onclick="simulateSign('1')">1</button>
+            <button class="sim-key" onclick="simulateSign('2')">2</button>
+            <button class="sim-key" onclick="simulateSign('3')">3</button>
+            <button class="sim-key" onclick="simulateSign('4')">4</button>
+            <button class="sim-key" onclick="simulateSign('5')">5</button>
+            <button class="sim-key" onclick="simulateSign('Z')">Z</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <footer>
+    <p>Signify — Smart Glove for Real-Time Sign Language to Speech Translation • Sri Sai Ram Engineering College</p>
+  </footer>
+
+  <script>
+    // MQTT WebSocket Configuration (matches mosquitto broker configuration)
+    const BROKER_WS_URL = "ws://" + window.location.hostname + ":9001";
+  </script>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

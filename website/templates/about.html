@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Signify — Smart Glove Project & Research</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <a href="/" class="brand-container">
+      <div class="brand-icon">🖐️</div>
+      <span class="brand-name">Signify</span>
+      <span class="brand-badge">Smart Glove v2.0</span>
+    </a>
+
+    <div class="nav-links">
+      <a href="/" class="nav-link">
+        <span>⚡</span> Live Translation
+      </a>
+      <a href="/customize" class="nav-link">
+        <span>⚙️</span> Customize Signs
+      </a>
+      <a href="/about" class="nav-link active">
+        <span>📖</span> About Project
+      </a>
+    </div>
+
+    <div class="nav-actions">
+      <a href="/" class="btn btn-primary btn-sm">Launch App ⚡</a>
+    </div>
+  </nav>
+
+  <div class="main-wrapper">
+
+    <!-- Hero Header -->
+    <section class="about-hero">
+      <div class="college-pill">
+        🏛️ Sri Sai Ram Engineering College • Anna University, Chennai
+      </div>
+      <h1 class="page-title" style="font-size: 2.8rem;">About Project Signify</h1>
+      <p class="page-subtitle" style="font-size: 1.15rem; max-width: 800px;">
+        A wearable assistive technology translating Indian Sign Language (ISL) gestures into real-time synthesized speech and text.
+      </p>
+    </section>
+
+    <!-- Executive Summary & Abstract -->
+    <div class="glass-card" style="margin-bottom: 2.5rem;">
+      <div class="section-title">
+        <span>💡</span> Abstract & Project Vision
+      </div>
+      <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1rem;">
+        Over 300 million people globally experience disabling hearing and speech impairments. In India, a significant population relies on <strong>Indian Sign Language (ISL)</strong> for everyday interactions. However, because the general public does not understand sign language, a persistent communication barrier exists in educational, professional, healthcare, and social environments.
+      </p>
+      <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7;">
+        <strong>Signify</strong> is an affordable, portable smart glove that captures finger flexion and wrist motion using body-worn sensors, processes the signals through an ESP32 microcontroller and machine learning, and immediately converts the gesture into audible synthesized speech and digital text. Unlike camera-based solutions, Signify operates in any lighting condition, ensures complete privacy, and requires no external cameras.
+      </p>
+    </div>
+
+    <!-- The Research Team -->
+    <div class="section-title">
+      <span>👥</span> Research Team & Supervision
+    </div>
+    <p class="section-desc">Department of Computer Science and Engineering (Internet of Things)</p>
+
+    <div class="team-grid">
+      <!-- Member 1 -->
+      <div class="team-card">
+        <div class="team-avatar">🧠</div>
+        <div class="team-name">Saravanan S N</div>
+        <div class="team-role">Team Leader & Machine Learning</div>
+        <div class="team-reg">2403412515721028</div>
+        <div class="team-resp">
+          Dataset collection protocols, pattern classification models, and algorithmic mapping of finger flexion to signs.
+        </div>
+      </div>
+
+      <!-- Member 2 -->
+      <div class="team-card">
+        <div class="team-avatar">💻</div>
+        <div class="team-name">Arjith A</div>
+        <div class="team-role">Web & Interface Developer</div>
+        <div class="team-reg">2403412515721003</div>
+        <div class="team-resp">
+          Web application architecture, Web Speech API integration, real-time telemetry dashboard, and user experience.
+        </div>
+      </div>
+
+      <!-- Member 3 -->
+      <div class="team-card">
+        <div class="team-avatar">⚡</div>
+        <div class="team-name">Muthukumar Vignesh S</div>
+        <div class="team-role">IoT & Sensor Interfacing</div>
+        <div class="team-reg">2403412515721015</div>
+        <div class="team-resp">
+          Hardware prototyping, ESP32 ADC calibration, voltage divider circuitry, and embedded firmware implementation.
+        </div>
+      </div>
+
+      <!-- Guide -->
+      <div class="team-card" style="border-color: rgba(99, 102, 241, 0.4); background: rgba(99, 102, 241, 0.08);">
+        <div class="team-avatar" style="background: linear-gradient(135deg, #6366f1, #ec4899);">🎓</div>
+        <div class="team-name">Dr. G. Valarmathy</div>
+        <div class="team-role">Project Supervisor & Guide</div>
+        <div class="team-reg">Associate Professor, CSE (IoT)</div>
+        <div class="team-resp">
+          Research direction, methodology validation, academic review, and prototype development mentorship.
+        </div>
+      </div>
+    </div>
+
+    <!-- 5-Stage Translation Pipeline -->
+    <div class="glass-card" style="margin-bottom: 2.5rem;">
+      <div class="section-title">
+        <span>🔄</span> End-to-End Translation Pipeline
+      </div>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+        Signify operates as a continuous closed loop from physical finger movement to synthesized speech output:
+      </p>
+
+      <div class="pipeline-flow">
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <div class="step-title">Gesture Sensing</div>
+          <div class="step-body">
+            Five finger-mounted flex sensors measure bend curvature; an MPU6050 IMU captures wrist acceleration and angular velocity.
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="step-num">2</div>
+          <div class="step-title">Signal Conditioning</div>
+          <div class="step-body">
+            ESP32 reads 12-bit ADC voltages on noise-free ADC1 pins, applying multi-sample smoothing to eliminate electrical jitter.
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="step-num">3</div>
+          <div class="step-title">Feature Extraction</div>
+          <div class="step-body">
+            Raw values are normalized into calibrated bend indices (F1–F5) and spatial orientation flags relative to gravity.
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="step-num">4</div>
+          <div class="step-title">Pattern Matching</div>
+          <div class="step-body">
+            Trained Machine Learning algorithms compare incoming feature vectors against ISL gesture templates to identify the exact sign.
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="step-num">5</div>
+          <div class="step-title">Speech Synthesis</div>
+          <div class="step-body">
+            The identified gesture triggers browser neural TTS (Web Speech API) or speaker playback with animated audio soundwaves.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Technical Hardware Specifications -->
+    <div class="glass-card" style="margin-bottom: 2.5rem;">
+      <div class="section-title">
+        <span>🛠️</span> Hardware Components & Technical Specifications
+      </div>
+      <p style="color: var(--text-muted); margin-bottom: 1.2rem;">
+        Detailed bill of materials from prototype development lab testing (Appendix I):
+      </p>
+
+      <div class="spec-table-container">
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Specification</th>
+              <th>Role in Signify Glove</th>
+              <th>Manufacturer / Source</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Flex Sensors (5x)</strong></td>
+              <td>2.2" / 4.5" Bend Sensors, 10kΩ – 30kΩ range</td>
+              <td>Finger flexion detection (Thumb through Pinky)</td>
+              <td>Spectra Symbol</td>
+            </tr>
+            <tr>
+              <td><strong>Microcontroller</strong></td>
+              <td>ESP32 Dual-Core Tensilica LX6, 240MHz</td>
+              <td>12-bit ADC sampling, digital filtering, WiFi/BLE</td>
+              <td>Espressif Systems</td>
+            </tr>
+            <tr>
+              <td><strong>Inertial Unit (IMU)</strong></td>
+              <td>MPU-6050 6-Axis (Gyroscope + Accelerometer)</td>
+              <td>Detects wrist orientation, tilt, and rotational signs</td>
+              <td>InvenSense</td>
+            </tr>
+            <tr>
+              <td><strong>Voltage Dividers</strong></td>
+              <td>10kΩ ±1% precision resistors to GND</td>
+              <td>Converts sensor resistance variation to 0–3.3V ADC</td>
+              <td>Generic Precision</td>
+            </tr>
+            <tr>
+              <td><strong>Battery Pack</strong></td>
+              <td>3.7V Li-ion 2000mAh rechargeable</td>
+              <td>Portable power supply for standalone mobile use</td>
+              <td>Generic Li-Po</td>
+            </tr>
+            <tr>
+              <td><strong>Audio / Speech</strong></td>
+              <td>Web Speech API + 8Ω 1W portable speaker</td>
+              <td>Real-time speech synthesis and acoustic voice playback</td>
+              <td>Integrated Software + Hardware</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- UN Sustainable Development Goals -->
+    <div class="section-title">
+      <span>🌍</span> Alignment with UN Sustainable Development Goals (SDGs)
+    </div>
+    <p class="section-desc">Signify was developed under the Sairam SDG Action Program to directly advance global inclusion targets:</p>
+
+    <div class="sdg-grid">
+      <div class="sdg-card">
+        <div class="sdg-tag sdg-10">10</div>
+        <div class="sdg-details">
+          <h4>SDG 10: Reduced Inequalities</h4>
+          <p>Target 10.2: Promotes universal social and economic inclusion for individuals with speech and hearing disabilities, empowering independent participation in society.</p>
+        </div>
+      </div>
+
+      <div class="sdg-card">
+        <div class="sdg-tag sdg-4">4</div>
+        <div class="sdg-details">
+          <h4>SDG 4: Quality Education</h4>
+          <p>Target 4.5: Eliminates communication disparities in inclusive classrooms, enabling students using sign language to actively ask questions and interact with peers.</p>
+        </div>
+      </div>
+
+      <div class="sdg-card">
+        <div class="sdg-tag sdg-3">3</div>
+        <div class="sdg-details">
+          <h4>SDG 3: Good Health & Well-Being</h4>
+          <p>Facilitates clear, rapid communication between speech-impaired patients and healthcare practitioners in clinical and emergency care settings.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>Signify — Smart Glove for Real-Time Sign Language to Speech Translation • Sri Sai Ram Engineering College</p>
+  </footer>
+
+</body>
+</html>

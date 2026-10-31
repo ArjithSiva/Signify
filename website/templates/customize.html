@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customize Signs — Signify Smart Glove</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <a href="/" class="brand-container">
+      <div class="brand-icon">🖐️</div>
+      <span class="brand-name">Signify</span>
+      <span class="brand-badge">Smart Glove v2.0</span>
+    </a>
+
+    <div class="nav-links">
+      <a href="/" class="nav-link">
+        <span>⚡</span> Live Translation
+      </a>
+      <a href="/customize" class="nav-link active">
+        <span>⚙️</span> Customize Signs
+      </a>
+      <a href="/about" class="nav-link">
+        <span>📖</span> About Project
+      </a>
+    </div>
+
+    <div class="nav-actions">
+      <a href="/" class="btn btn-primary btn-sm">Launch App ⚡</a>
+    </div>
+  </nav>
+
+  <div class="main-wrapper">
+
+    <header class="page-header">
+      <h1 class="page-title">Personalized Sign Dictionary</h1>
+      <p class="page-subtitle">Customize what words or phrases your smart glove speaks for each detected sign gesture</p>
+    </header>
+
+    <div class="custom-grid">
+
+      <!-- LEFT: Add / Modify Mapping & Presets -->
+      <div>
+        
+        <div class="glass-card" style="margin-bottom: 1.5rem;">
+          <div class="card-header-row">
+            <div class="card-title">
+              <span>✍️</span> Map Gesture to Spoken Phrase
+            </div>
+          </div>
+
+          <form id="customForm">
+            <div style="margin-bottom: 1rem;">
+              <label style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 6px;">
+                Gesture Label / Key (e.g. 0–9 or A–Z)
+              </label>
+              <input 
+                type="text" 
+                id="gestureKey" 
+                class="custom-select" 
+                placeholder="e.g. 0 or A or H" 
+                maxlength="5"
+                required 
+                style="font-size: 1.1rem; font-weight: 700; text-transform: uppercase;"
+              />
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+              <label style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 6px;">
+                Spoken Word or Full Phrase
+              </label>
+              <input 
+                type="text" 
+                id="customPhrase" 
+                class="custom-select" 
+                placeholder="e.g. Good Morning or Need Water" 
+                required 
+                style="font-size: 1rem;"
+              />
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+              💾 Save Phrase Mapping
+            </button>
+          </form>
+        </div>
+
+        <!-- Quick Presets -->
+        <div class="glass-card">
+          <div class="card-header-row">
+            <div class="card-title">
+              <span>⚡</span> Load Quick Presets
+            </div>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+            Quickly load standard vocabulary packs with one click:
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button class="btn btn-secondary" onclick="loadQuickPresets('everyday')">
+              🗣️ Everyday Greetings & Polite Phrases
+            </button>
+            <button class="btn btn-secondary" onclick="loadQuickPresets('emergency')">
+              🚨 Emergency & Medical Assistance
+            </button>
+            <button class="btn btn-secondary" onclick="loadQuickPresets('numbers')">
+              🔢 Numbers to Words (0–5)
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Current Active Mappings -->
+      <div>
+        <div class="glass-card">
+          <div class="card-header-row">
+            <div class="card-title">
+              <span>📖</span> Active Gesture Mappings
+            </div>
+            <span style="font-size: 0.75rem; color: var(--text-dim);">Stored locally in browser</span>
+          </div>
+
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+            Whenever the glove detects these gestures, the browser automatically announces the custom phrase aloud:
+          </p>
+
+          <div id="customList">
+            <!-- Dynamically populated by app.js -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <footer>
+    <p>Signify — Smart Glove for Real-Time Sign Language to Speech Translation • Sri Sai Ram Engineering College</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
